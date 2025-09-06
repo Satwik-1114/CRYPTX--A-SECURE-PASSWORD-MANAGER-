@@ -1,4 +1,4 @@
-# 🔐 CNS Project - Cryptographic Storage System
+# 🔐 CRYPTX - A SECURE PASSWORD STORAGE SYSTEM
 
 ## 📌 Overview
 This project is developed as part of **Computer Network Security (CNS)** coursework.  
