@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Password | CryptX</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Store a Password</h2>
+        <form id="storeForm">
+            <input type="text" id="description" placeholder="Enter Description" required>
+            <input type="password" id="password" placeholder="Enter Password" required>
+            <button type="submit">Store Password</button>
+        </form>
+        <a href="dashboard.html"><button>Back to Dashboard</button></a>
+    </div>
+
+    <script>
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const masterKey = localStorage.getItem("masterKey");
+    
+        if (!loggedInUser || !masterKey) {
+            window.location.href = "index.html";
+        }
+    
+        document.getElementById("storeForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+    
+            const description = document.getElementById("description").value.trim();
+            const password = document.getElementById("password").value;
+    
+            const encryptedPassword = CryptoJS.AES.encrypt(password, masterKey).toString();
+    
+            try {
+                const res = await fetch("http://localhost:5000/store", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username: loggedInUser, description, encryptedPassword })
+                });
+    
+                const data = await res.json();
+    
+                if (!res.ok) {
+                    alert(data.message);
+                    return;
+                }
+    
+                alert("Password stored securely!");
+                document.getElementById("storeForm").reset();
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        });
+    </script>    
+</body>
+</html>
